@@ -1,18 +1,26 @@
 import { StatusBar } from 'expo-status-bar'
 import React, { Component } from 'react'
-import { API_KEY } from '@env'
+import { API_KEY, MESSAGING_SENDER_ID, APP_ID, MEASUREMENT_ID } from '@env'
 import { View, Text } from 'react-native'
+import { Provider } from 'react-redux'
+import { createStore, applyMiddleware } from 'redux'
+import rootReducer from './redux/reducers'
+import thunk from 'redux-thunk'
+
+const store = createStore(rootReducer, applyMiddleware(thunk))
 
 import firebase from 'firebase'
+
 const firebaseConfig = {
   apiKey: API_KEY,
   authDomain: 'instagram-clone-9b35f.firebaseapp.com',
   projectId: 'instagram-clone-9b35f',
   storageBucket: 'instagram-clone-9b35f.appspot.com',
-  messagingSenderId: '522226968827',
-  appId: '1:522226968827:web:01780eeb9fa19261b4685e',
-  measurementId: 'G-RB21SW8MTF',
+  messagingSenderId: MESSAGING_SENDER_ID,
+  appId: APP_ID,
+  measurementId: MEASUREMENT_ID,
 }
+
 if (firebase.apps.length === 0) {
   firebase.initializeApp(firebaseConfig)
 }
@@ -21,6 +29,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import LandingScreen from './components/auth/Landing'
 import RegisterScreen from './components/auth/Register'
+import MainScreen from './components/Main'
 
 const Stack = createStackNavigator()
 
@@ -69,9 +78,9 @@ export class App extends Component {
     }
 
     return (
-      <View style={{ flex: 1, justifyContent: 'center' }}>
-        <Text>User is logged in</Text>
-      </View>
+      <Provider store={store}>
+        <MainScreen />
+      </Provider>
     )
   }
 }

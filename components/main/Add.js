@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, Button, Image } from 'react-native'
+import { StyleSheet, Text, View, Image } from 'react-native'
 import { Camera } from 'expo-camera'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import * as ImagePicker from 'expo-image-picker'
 
 export default function App() {
-  const [hasPermission, setHasPermission] = useState(null)
+  const [hasCameraPermission, setHasCameraPermission] = useState(null)
+  const [hasGaleryPermission, setHasGaleryPermission] = useState(null)
   const [camera, setCamera] = useState(null)
   const [image, setImage] = useState(null)
 
@@ -12,8 +14,12 @@ export default function App() {
 
   useEffect(() => {
     ;(async () => {
-      const { status } = await Camera.requestPermissionsAsync()
-      setHasPermission(status === 'granted')
+      const cameraStatus = await Camera.requestPermissionsAsync()
+      setHasCameraPermission(cameraStatus.status === 'granted')
+
+      const galleryStatus =
+        await ImagePicker.requestMediaLibraryPermissionsAsync()
+      setHasGaleryPermission(galleryStatus.status === 'granted')
     })()
   }, [])
 
@@ -24,11 +30,24 @@ export default function App() {
     }
   }
 
-  if (hasPermission === null) {
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    })
+
+    if (!result.cancelled) {
+      setImage(result.uri)
+    }
+  }
+
+  if (hasCameraPermission === null || hasGaleryPermission === false) {
     return <View />
   }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>
+  if (hasCameraPermission === false || hasGaleryPermission === false) {
+    return <Text>No access to camera/galery</Text>
   }
 
   return (
@@ -45,7 +64,7 @@ export default function App() {
         style={{
           display: 'flex',
           justifyContent: 'space-between',
-          backgroundColor: '#09092a',
+          backgroundColor: 'transparent',
           padding: '13px',
         }}
       >
@@ -53,7 +72,7 @@ export default function App() {
           <Ionicons
             name='camera-reverse'
             size={26}
-            style={{ color: '#ffffff' }}
+            style={{ color: '#09092a' }}
             onPress={() => {
               setType(
                 type === Camera.Constants.Type.back
@@ -66,9 +85,17 @@ export default function App() {
         <div>
           <Ionicons
             name='camera'
-            style={{ color: '#ffffff' }}
+            style={{ color: '#09092a' }}
             size={26}
             onPress={() => takePicture()}
+          />
+        </div>
+        <div>
+          <Ionicons
+            name='images-outline'
+            style={{ color: '#09092a' }}
+            size={26}
+            onPress={() => pickImage()}
           />
         </div>
       </div>

@@ -20,12 +20,18 @@ export class Main extends Component {
 
   render() {
     return (
-      <Tab.Navigator initialRouteName='Feed' labeled={false}>
+      <Tab.Navigator
+        initialRouteName='Feed'
+        labeled={false}
+        activeColor='#ffffff'
+        inactiveColor='#40367c'
+        barStyle={{ backgroundColor: '#09092a' }}
+      >
         <Tab.Screen
           name='Feed'
           component={FeedScreen}
           options={{
-            tabBarIcon: ({ color, size }) => (
+            tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons name='home' color={color} size={26} />
             ),
           }}
@@ -40,7 +46,7 @@ export class Main extends Component {
             },
           })}
           options={{
-            tabBarIcon: ({ color, size }) => (
+            tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons name='plus-box' color={color} size={26} />
             ),
           }}

@@ -2,7 +2,7 @@ import { combineReducers } from 'redux'
 import { user } from './user'
 
 const Reducers = combineReducers({
-  useState: user,
+  userState: user,
 })
 
 export default Reducers

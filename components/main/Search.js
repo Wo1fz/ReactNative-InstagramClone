@@ -28,7 +28,6 @@ export default function Search(props) {
         placeholder='Search...'
         style={{
           height: '30px',
-          borderWidth: '2',
           padding: '20px',
         }}
         onChangeText={(search) => fetchUsers(search)}

@@ -41,14 +41,32 @@ export class Register extends Component {
       <View>
         <TextInput
           placeholder='name'
+          style={{
+            height: '30px',
+            borderWidth: '2',
+            padding: '20px',
+            margin: '2px',
+          }}
           onChangeText={(name) => this.setState({ name })}
         />
         <TextInput
           placeholder='email'
+          style={{
+            height: '30px',
+            borderWidth: '2',
+            padding: '20px',
+            margin: '2px',
+          }}
           onChangeText={(email) => this.setState({ email })}
         />
         <TextInput
           placeholder='password'
+          style={{
+            height: '30px',
+            borderWidth: '2',
+            padding: '20px',
+            margin: '2px',
+          }}
           secureTextEntry={true}
           onChangeText={(password) => this.setState({ password })}
         />

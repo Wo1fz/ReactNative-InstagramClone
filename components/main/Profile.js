@@ -80,6 +80,10 @@ function Profile(props) {
       .delete()
   }
 
+  const onLogout = () => {
+    firebase.auth().signOut()
+  }
+
   if (user === null) {
     return <View />
   }
@@ -90,7 +94,7 @@ function Profile(props) {
         <Text style={{ fontSize: '26px', marginBottom: '6px' }}>
           {user.name}
         </Text>
-        {props.route.params.uid !== firebase.auth().currentUser.uid && (
+        {props.route.params.uid !== firebase.auth().currentUser.uid ? (
           <View>
             {following ? (
               <Button title='Folllowing' onPress={() => onUnfollow()} />
@@ -98,6 +102,8 @@ function Profile(props) {
               <Button title='Follow' onPress={() => onFollow()} />
             )}
           </View>
+        ) : (
+          <Button title='Logout' onPress={() => onLogout()} />
         )}
       </View>
       <View style={styles.containerGallery}>

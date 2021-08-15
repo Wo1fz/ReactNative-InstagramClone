@@ -87,7 +87,9 @@ function Profile(props) {
   return (
     <View style={styles.container}>
       <View style={styles.containerInfo}>
-        <Text style={{ fontSize: '24px' }}>{user.name}</Text>
+        <Text style={{ fontSize: '26px', marginBottom: '6px' }}>
+          {user.name}
+        </Text>
         {props.route.params.uid !== firebase.auth().currentUser.uid && (
           <View>
             {following ? (

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Button, TextInput } from 'react-native'
+import { View, Button, TextInput, Text } from 'react-native'
 import firebase from 'firebase'
 
 export class Register extends Component {
@@ -10,6 +10,7 @@ export class Register extends Component {
       email: '',
       password: '',
       name: '',
+      errorMessage: '',
     }
     this.onSignUp = this.onSignUp.bind(this)
   }
@@ -29,16 +30,27 @@ export class Register extends Component {
             name,
             email,
           })
-        console.log(result)
       })
       .catch((error) => {
-        console.log(error)
+        this.setState({ errorMessage: error.message })
       })
   }
 
   render() {
     return (
       <View>
+        {this.state.errorMessage !== '' && (
+          <Text
+            style={{
+              backgroundColor: 'red',
+              color: 'white',
+              padding: 5,
+              textAlign: 'center',
+            }}
+          >
+            {this.state.errorMessage}
+          </Text>
+        )}
         <TextInput
           placeholder='name'
           style={{

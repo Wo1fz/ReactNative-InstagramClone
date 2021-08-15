@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { View, Button, TextInput } from 'react-native'
+import { View, Button, TextInput, Text } from 'react-native'
 import firebase from 'firebase'
+import { TapGestureHandler } from 'react-native-gesture-handler'
 
 export class Login extends Component {
   constructor(props) {
@@ -9,8 +10,9 @@ export class Login extends Component {
     this.state = {
       email: '',
       password: '',
+      errorMessage: '',
     }
-    this.onSignUp = this.onSignUp.bind(this)
+    this.onSignIn = this.onSignIn.bind(this)
   }
 
   onSignIn() {
@@ -22,27 +24,46 @@ export class Login extends Component {
         console.log(result)
       })
       .catch((error) => {
-        console.log(error)
+        this.setState({ errorMessage: error.message })
       })
   }
 
   render() {
     return (
       <View>
-        <TextInput
-          placeholder='name'
-          onChangeText={(name) => this.setState({ name })}
-        />
+        {this.state.errorMessage !== '' && (
+          <Text
+            style={{
+              backgroundColor: 'red',
+              color: 'white',
+              padding: 5,
+              textAlign: 'center',
+            }}
+          >
+            {this.state.errorMessage}
+          </Text>
+        )}
         <TextInput
           placeholder='email'
+          style={{
+            height: '30px',
+            borderWidth: '2',
+            padding: '20px',
+            margin: '2px',
+          }}
           onChangeText={(email) => this.setState({ email })}
         />
         <TextInput
           placeholder='password'
+          style={{
+            height: '30px',
+            borderWidth: '2',
+            padding: '20px',
+            margin: '2px',
+          }}
           secureTextEntry={true}
           onChangeText={(password) => this.setState({ password })}
         />
-
         <Button onPress={() => this.onSignIn()} title='Sign In' />
       </View>
     )

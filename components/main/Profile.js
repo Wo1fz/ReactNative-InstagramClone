@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, View, Text, Image, FlatList } from 'react-native'
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  FlatList,
+  Button,
+  Dimensions,
+} from 'react-native'
 import { connect } from 'react-redux'
 import firebase from 'firebase'
 require('firebase/firestore')
@@ -7,6 +15,7 @@ require('firebase/firestore')
 function Profile(props) {
   const [userPosts, setUserPosts] = useState([])
   const [user, setUser] = useState(null)
+  const [following, setFollowing] = useState(false)
 
   useEffect(() => {
     const { currentUser, posts } = props
@@ -43,7 +52,33 @@ function Profile(props) {
           setUserPosts(posts)
         })
     }
-  }, [props.route.params.uid])
+
+    if (props.following.indexOf(props.route.params.uid) > -1) {
+      setFollowing(true)
+    } else {
+      setFollowing(false)
+    }
+  }, [props.route.params.uid, props.following])
+
+  const onFollow = () => {
+    firebase
+      .firestore()
+      .collection('following')
+      .doc(firebase.auth().currentUser.uid)
+      .collection('userFollowing')
+      .doc(props.route.params.uid)
+      .set({})
+  }
+
+  const onUnfollow = () => {
+    firebase
+      .firestore()
+      .collection('following')
+      .doc(firebase.auth().currentUser.uid)
+      .collection('userFollowing')
+      .doc(props.route.params.uid)
+      .delete()
+  }
 
   if (user === null) {
     return <View />
@@ -53,6 +88,15 @@ function Profile(props) {
     <View style={styles.container}>
       <View style={styles.containerInfo}>
         <Text style={{ fontSize: '24px' }}>{user.name}</Text>
+        {props.route.params.uid !== firebase.auth().currentUser.uid && (
+          <View>
+            {following ? (
+              <Button title='Folllowing' onPress={() => onUnfollow()} />
+            ) : (
+              <Button title='Follow' onPress={() => onFollow()} />
+            )}
+          </View>
+        )}
       </View>
       <View style={styles.containerGallery}>
         <FlatList
@@ -70,6 +114,9 @@ function Profile(props) {
   )
 }
 
+const win = Dimensions.get('window')
+const picture = win.width * (1 / 3)
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -81,11 +128,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   image: {
-    flex: 1,
     aspectRatio: 1 / 1,
-    width: '119px',
-    height: '119px',
-    marginBottom: '1px',
+    width: picture - 1,
+    height: picture - 1,
+    marginBottom: 1,
   },
   containerImage: {
     flex: 1 / 3,
@@ -95,6 +141,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (store) => ({
   currentUser: store.userState.currentUser,
   posts: store.userState.posts,
+  following: store.userState.following,
 })
 
 export default connect(mapStateToProps, null)(Profile)

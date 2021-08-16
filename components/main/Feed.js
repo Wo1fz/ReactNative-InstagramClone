@@ -38,23 +38,32 @@ function Feed(props) {
   return (
     <View style={styles.container}>
       <View style={styles.containerGallery}>
-        <FlatList
-          numColumns={1}
-          horizontal={false}
-          data={posts}
-          renderItem={({ item }) => (
-            <View style={styles.container}>
-              <View style={{ flexDirection: 'row' }}>
+        {posts.length > 0 ? (
+          <FlatList
+            numColumns={1}
+            horizontal={false}
+            data={posts}
+            renderItem={({ item }) => (
+              <View style={styles.container}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Image
+                    source={item.user.profilePic}
+                    style={styles.profilePic}
+                  />
+                  <Text style={styles.name}>{item.user.name}</Text>
+                </View>
                 <Image
-                  source={item.user.profilePic}
-                  style={styles.profilePic}
+                  style={styles.image}
+                  source={{ uri: item.downloadURL }}
                 />
-                <Text style={styles.name}>{item.user.name}</Text>
               </View>
-              <Image style={styles.image} source={{ uri: item.downloadURL }} />
-            </View>
-          )}
-        />
+            )}
+          />
+        ) : (
+          <Text style={{ fontSize: '20px', marginTop: '40px' }}>
+            Follow someone now!
+          </Text>
+        )}
       </View>
     </View>
   )

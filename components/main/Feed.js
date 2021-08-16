@@ -95,7 +95,7 @@ function Feed(props) {
                   >
                     <Text
                       style={{
-                        fontSize: '17px',
+                        fontSize: '16px',
                         marginLeft: '10px',
                         fontWeight: 'bold',
                       }}
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     flex: 1,
     color: 'black',
     fontSize: '18px',
-    margin: '8px',
+    margin: '10px',
   },
   image: {
     aspectRatio: 1 / 1,
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: '7px',
     marginBottom: '35px',
-    fontSize: '17px',
+    fontSize: '16px',
   },
 })
 

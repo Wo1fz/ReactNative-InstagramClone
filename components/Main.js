@@ -40,6 +40,7 @@ export class Main extends Component {
         <Tab.Screen
           name='Feed'
           component={FeedScreen}
+          navigation={this.props.navigation}
           options={{
             tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons name='home' color={color} size={26} />

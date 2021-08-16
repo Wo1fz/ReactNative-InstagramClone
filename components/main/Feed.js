@@ -7,6 +7,7 @@ import {
   FlatList,
   Button,
   Dimensions,
+  TouchableOpacity,
 } from 'react-native'
 import { connect } from 'react-redux'
 import firebase from 'firebase'
@@ -14,6 +15,7 @@ require('firebase/firestore')
 
 function Feed(props) {
   const [posts, setPosts] = useState([])
+  console.log(posts)
 
   useEffect(() => {
     let posts = []
@@ -28,7 +30,7 @@ function Feed(props) {
       }
 
       posts.sort(function (x, y) {
-        return x.creation - y.creation
+        return y.creation - x.creation
       })
 
       setPosts(posts)
@@ -45,17 +47,64 @@ function Feed(props) {
             data={posts}
             renderItem={({ item }) => (
               <View style={styles.container}>
-                <View style={{ flexDirection: 'row' }}>
-                  <Image
-                    source={item.user.profilePic}
-                    style={styles.profilePic}
-                  />
-                  <Text style={styles.name}>{item.user.name}</Text>
-                </View>
+                {item.user.profilePic === null ? (
+                  <View style={{ flexDirection: 'row' }}>
+                    <Image
+                      source={require('../../assets/blankProfile.png')}
+                      style={styles.profilePic}
+                    />
+                    <TouchableOpacity
+                      onPress={() =>
+                        props.navigation.navigate('Profile', {
+                          uid: item.user.uid,
+                        })
+                      }
+                    >
+                      <Text style={styles.name}>{item.user.name}</Text>
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <View style={{ flexDirection: 'row' }}>
+                    <Image
+                      source={item.user.profilePic}
+                      style={styles.profilePic}
+                    />
+                    <TouchableOpacity
+                      onPress={() =>
+                        props.navigation.navigate('Profile', {
+                          uid: item.user.uid,
+                        })
+                      }
+                    >
+                      <Text style={styles.name}>{item.user.name}</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+
                 <Image
                   style={styles.image}
                   source={{ uri: item.downloadURL }}
                 />
+                <View style={{ flexDirection: 'row' }}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      props.navigation.navigate('Profile', {
+                        uid: item.user.uid,
+                      })
+                    }
+                  >
+                    <Text
+                      style={{
+                        fontSize: '17px',
+                        marginLeft: '10px',
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      {item.user.name}
+                    </Text>
+                  </TouchableOpacity>
+                  <Text style={styles.caption}>{item.caption}</Text>
+                </View>
               </View>
             )}
           />
@@ -83,7 +132,7 @@ const styles = StyleSheet.create({
   name: {
     flex: 1,
     color: 'black',
-    fontSize: '20px',
+    fontSize: '18px',
     margin: '8px',
   },
   image: {
@@ -99,6 +148,13 @@ const styles = StyleSheet.create({
     marginLeft: '7px',
     marginTop: '6px',
     marginBottom: '5px',
+    marginLeft: '15px',
+  },
+  caption: {
+    flex: 1,
+    marginLeft: '7px',
+    marginBottom: '35px',
+    fontSize: '17px',
   },
 })
 

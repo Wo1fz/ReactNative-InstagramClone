@@ -44,7 +44,13 @@ function Feed(props) {
           data={posts}
           renderItem={({ item }) => (
             <View style={styles.container}>
-              <Text style={styles.name}>{item.user.name}</Text>
+              <View style={{ flexDirection: 'row' }}>
+                <Image
+                  source={item.user.profilePic}
+                  style={styles.profilePic}
+                />
+                <Text style={styles.name}>{item.user.name}</Text>
+              </View>
               <Image style={styles.image} source={{ uri: item.downloadURL }} />
             </View>
           )}
@@ -69,14 +75,21 @@ const styles = StyleSheet.create({
     flex: 1,
     color: 'black',
     fontSize: '20px',
-    margin: '10px',
-    paddingLeft: '5px',
+    margin: '8px',
   },
   image: {
     aspectRatio: 1 / 1,
     width: picture,
     height: picture - 110,
     marginBottom: 1,
+  },
+  profilePic: {
+    width: 35,
+    height: 35,
+    borderRadius: 50,
+    marginLeft: '7px',
+    marginTop: '6px',
+    marginBottom: '5px',
   },
 })
 

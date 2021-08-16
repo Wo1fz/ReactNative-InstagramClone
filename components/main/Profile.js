@@ -91,9 +91,21 @@ function Profile(props) {
   return (
     <View style={styles.container}>
       <View style={styles.containerInfo}>
-        <Text style={{ fontSize: '26px', marginBottom: '6px' }}>
-          {user.name}
-        </Text>
+        {user.profilePic !== null ? (
+          <View style={{ flexDirection: 'row' }}>
+            <Image source={user.profilePic} style={styles.profilePic} />
+            <Text style={styles.userName}>{user.name}</Text>
+          </View>
+        ) : (
+          <View style={{ flexDirection: 'row' }}>
+            <Image
+              source={require('../../assets/blankProfile.png')}
+              style={styles.profilePic}
+            />
+            <Text style={styles.userName}>{user.name}</Text>
+          </View>
+        )}
+
         {props.route.params.uid !== firebase.auth().currentUser.uid ? (
           <View>
             {following ? (
@@ -107,16 +119,25 @@ function Profile(props) {
         )}
       </View>
       <View style={styles.containerGallery}>
-        <FlatList
-          numColumns={3}
-          horizontal={false}
-          data={userPosts}
-          renderItem={({ item }) => (
-            <View style={styles.containerImage}>
-              <Image style={styles.image} source={{ uri: item.downloadURL }} />
-            </View>
-          )}
-        />
+        {userPosts.length > 0 ? (
+          <FlatList
+            numColumns={3}
+            horizontal={false}
+            data={userPosts}
+            renderItem={({ item }) => (
+              <View style={styles.containerImage}>
+                <Image
+                  style={styles.image}
+                  source={{ uri: item.downloadURL }}
+                />
+              </View>
+            )}
+          />
+        ) : (
+          <Text style={{ textAlign: 'center', marginTop: '50px' }}>
+            Post a picture now!
+          </Text>
+        )}
       </View>
     </View>
   )
@@ -143,6 +164,19 @@ const styles = StyleSheet.create({
   },
   containerImage: {
     flex: 1 / 3,
+  },
+  profilePic: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginLeft: '10px',
+    marginBottom: '15px',
+  },
+  userName: {
+    fontSize: '26px',
+    marginBottom: '6px',
+    marginLeft: '20px',
+    marginTop: '30px',
   },
 })
 

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { View, Button, TextInput, Text } from 'react-native'
+import { View, Button, TextInput, Text, Image } from 'react-native'
 import firebase from 'firebase'
+import * as ImagePicker from 'expo-image-picker'
 
 export class Register extends Component {
   constructor(props) {
@@ -11,12 +12,13 @@ export class Register extends Component {
       password: '',
       name: '',
       errorMessage: '',
+      profilePic: null,
     }
     this.onSignUp = this.onSignUp.bind(this)
   }
 
   onSignUp() {
-    const { email, password, name } = this.state
+    const { email, password, name, profilePic } = this.state
 
     firebase
       .auth()
@@ -29,11 +31,25 @@ export class Register extends Component {
           .set({
             name,
             email,
+            profilePic,
           })
       })
       .catch((error) => {
         this.setState({ errorMessage: error.message })
       })
+  }
+
+  async uploadProfilePicture() {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    })
+
+    if (!result.cancelled) {
+      this.setState({ profilePic: result.uri })
+    }
   }
 
   render() {
@@ -50,6 +66,51 @@ export class Register extends Component {
           >
             {this.state.errorMessage}
           </Text>
+        )}
+        {this.state.profilePic === null ? (
+          <View>
+            <Image
+              source={require('../../assets/blankProfile.png')}
+              style={{
+                flex: 1,
+                width: 100,
+                height: 100,
+                borderRadius: 50,
+                margin: '10px',
+              }}
+            />
+            <Text
+              style={{
+                marginLeft: '18px',
+                marginBottom: '20px',
+              }}
+              onPress={() => this.uploadProfilePicture()}
+            >
+              Upload Image
+            </Text>
+          </View>
+        ) : (
+          <View>
+            <Image
+              source={{ uri: this.state.profilePic }}
+              style={{
+                flex: 1,
+                width: 100,
+                height: 100,
+                borderRadius: 50,
+                margin: '10px',
+              }}
+            />
+            <Text
+              style={{
+                marginLeft: '18px',
+                marginBottom: '20px',
+              }}
+              onPress={() => this.uploadProfilePicture()}
+            >
+              Upload Image
+            </Text>
+          </View>
         )}
         <TextInput
           placeholder='name'

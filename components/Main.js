@@ -83,7 +83,7 @@ export class Main extends Component {
             },
           })}
           options={{
-            tabBarIcon: ({ color, size }) => (
+            tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons
                 name='account-circle'
                 color={color}

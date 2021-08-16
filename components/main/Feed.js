@@ -5,9 +5,9 @@ import {
   Text,
   Image,
   FlatList,
-  Button,
   Dimensions,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native'
 import { connect } from 'react-redux'
 import firebase from 'firebase'
@@ -15,12 +15,13 @@ require('firebase/firestore')
 
 function Feed(props) {
   const [posts, setPosts] = useState([])
-  console.log(posts)
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
+    setIsLoading(true)
     let posts = []
 
-    if (props.usersLoaded === props.following.length) {
+    if (props.usersFollowingLoaded === props.following.length) {
       for (let i = 0; i < props.following.length; i++) {
         const user = props.users.find((el) => el.uid === props.following[i])
 
@@ -35,35 +36,23 @@ function Feed(props) {
 
       setPosts(posts)
     }
-  }, [props.usersLoaded])
+
+    setIsLoading(false)
+  }, [props.usersFollowingLoaded])
 
   return (
     <View style={styles.container}>
-      <View style={styles.containerGallery}>
-        {posts.length > 0 ? (
-          <FlatList
-            numColumns={1}
-            horizontal={false}
-            data={posts}
-            renderItem={({ item }) => (
-              <View style={styles.container}>
-                {item.user.profilePic === null ? (
-                  <View style={{ flexDirection: 'row' }}>
-                    <Image
-                      source={require('../../assets/blankProfile.png')}
-                      style={styles.profilePic}
-                    />
-                    <TouchableOpacity
-                      onPress={() =>
-                        props.navigation.navigate('Profile', {
-                          uid: item.user.uid,
-                        })
-                      }
-                    >
-                      <Text style={styles.name}>{item.user.name}</Text>
-                    </TouchableOpacity>
-                  </View>
-                ) : (
+      {isLoading ? (
+        <ActivityIndicator size='large' style={{ marginTop: '250px' }} />
+      ) : (
+        <View style={styles.containerGallery}>
+          {posts.length > 0 ? (
+            <FlatList
+              numColumns={1}
+              horizontal={false}
+              data={posts}
+              renderItem={({ item }) => (
+                <View style={styles.container}>
                   <View style={{ flexDirection: 'row' }}>
                     <Image
                       source={item.user.profilePic}
@@ -79,41 +68,44 @@ function Feed(props) {
                       <Text style={styles.name}>{item.user.name}</Text>
                     </TouchableOpacity>
                   </View>
-                )}
-
-                <Image
-                  style={styles.image}
-                  source={{ uri: item.downloadURL }}
-                />
-                <View style={{ flexDirection: 'row' }}>
-                  <TouchableOpacity
+                  <Image
+                    style={styles.image}
+                    source={{ uri: item.downloadURL }}
+                  />
+                  <View style={{ flexDirection: 'row' }}>
+                    <TouchableOpacity
+                      onPress={() =>
+                        props.navigation.navigate('Profile', {
+                          uid: item.user.uid,
+                        })
+                      }
+                    >
+                      <Text style={styles.captionUID}>{item.user.name}</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.caption}>{item.caption}</Text>
+                  </View>
+                  <Text
+                    style={styles.comments}
                     onPress={() =>
-                      props.navigation.navigate('Profile', {
+                      props.navigation.navigate('Comment', {
+                        ...item,
+                        postId: item.id,
                         uid: item.user.uid,
                       })
                     }
                   >
-                    <Text
-                      style={{
-                        fontSize: '16px',
-                        marginLeft: '10px',
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      {item.user.name}
-                    </Text>
-                  </TouchableOpacity>
-                  <Text style={styles.caption}>{item.caption}</Text>
+                    View Comments...
+                  </Text>
                 </View>
-              </View>
-            )}
-          />
-        ) : (
-          <Text style={{ fontSize: '20px', marginTop: '40px' }}>
-            Follow someone now!
-          </Text>
-        )}
-      </View>
+              )}
+            />
+          ) : (
+            <Text style={{ fontSize: '20px', marginTop: '40px' }}>
+              Follow someone now!
+            </Text>
+          )}
+        </View>
+      )}
     </View>
   )
 }
@@ -153,8 +145,17 @@ const styles = StyleSheet.create({
   caption: {
     flex: 1,
     marginLeft: '7px',
-    marginBottom: '35px',
+    marginBottom: '7px',
     fontSize: '16px',
+  },
+  captionUID: {
+    fontSize: '16px',
+    marginLeft: '10px',
+    fontWeight: 'bold',
+  },
+  comments: {
+    marginLeft: '10px',
+    marginBottom: '35px',
   },
 })
 
@@ -162,7 +163,7 @@ const mapStateToProps = (store) => ({
   currentUser: store.userState.currentUser,
   following: store.userState.following,
   users: store.usersState.users,
-  usersLoaded: store.usersState.usersLoaded,
+  usersFollowingLoaded: store.usersState.usersFollowingLoaded,
 })
 
 export default connect(mapStateToProps, null)(Feed)

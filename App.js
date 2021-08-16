@@ -84,11 +84,11 @@ export class App extends Component {
     return (
       <Provider store={store}>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName='Main'>
+          <Stack.Navigator initialRouteName='PicMe'>
             <Stack.Screen
-              name='Main'
+              name='PicMe'
               component={MainScreen}
-              options={{ headerShown: false }}
+              options={{ headerShown: true }}
             />
             <Stack.Screen
               name='Add'

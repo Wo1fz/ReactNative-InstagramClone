@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { View, Button, TextInput, Text, Image } from 'react-native'
 import firebase from 'firebase'
 import * as ImagePicker from 'expo-image-picker'
+import DefaultImage from '../../assets/blankProfile.png'
 
 export class Register extends Component {
   constructor(props) {
@@ -12,7 +13,7 @@ export class Register extends Component {
       password: '',
       name: '',
       errorMessage: '',
-      profilePic: null,
+      profilePic: DefaultImage,
     }
     this.onSignUp = this.onSignUp.bind(this)
   }
@@ -67,51 +68,27 @@ export class Register extends Component {
             {this.state.errorMessage}
           </Text>
         )}
-        {this.state.profilePic === null ? (
-          <View>
-            <Image
-              source={require('../../assets/blankProfile.png')}
-              style={{
-                flex: 1,
-                width: 100,
-                height: 100,
-                borderRadius: 50,
-                margin: '10px',
-              }}
-            />
-            <Text
-              style={{
-                marginLeft: '18px',
-                marginBottom: '20px',
-              }}
-              onPress={() => this.uploadProfilePicture()}
-            >
-              Upload Image
-            </Text>
-          </View>
-        ) : (
-          <View>
-            <Image
-              source={{ uri: this.state.profilePic }}
-              style={{
-                flex: 1,
-                width: 100,
-                height: 100,
-                borderRadius: 50,
-                margin: '10px',
-              }}
-            />
-            <Text
-              style={{
-                marginLeft: '18px',
-                marginBottom: '20px',
-              }}
-              onPress={() => this.uploadProfilePicture()}
-            >
-              Upload Image
-            </Text>
-          </View>
-        )}
+        <View>
+          <Image
+            source={this.state.profilePic}
+            style={{
+              flex: 1,
+              width: 100,
+              height: 100,
+              borderRadius: 50,
+              margin: '10px',
+            }}
+          />
+          <Text
+            style={{
+              marginLeft: '18px',
+              marginBottom: '20px',
+            }}
+            onPress={() => this.uploadProfilePicture()}
+          >
+            Upload Image
+          </Text>
+        </View>
         <TextInput
           placeholder='name'
           style={{

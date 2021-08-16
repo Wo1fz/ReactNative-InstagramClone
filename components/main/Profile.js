@@ -91,21 +91,10 @@ function Profile(props) {
   return (
     <View style={styles.container}>
       <View style={styles.containerInfo}>
-        {user.profilePic !== null ? (
-          <View style={{ flexDirection: 'row' }}>
-            <Image source={user.profilePic} style={styles.profilePic} />
-            <Text style={styles.userName}>{user.name}</Text>
-          </View>
-        ) : (
-          <View style={{ flexDirection: 'row' }}>
-            <Image
-              source={require('../../assets/blankProfile.png')}
-              style={styles.profilePic}
-            />
-            <Text style={styles.userName}>{user.name}</Text>
-          </View>
-        )}
-
+        <View style={{ flexDirection: 'row' }}>
+          <Image source={user.profilePic} style={styles.profilePic} />
+          <Text style={styles.userName}>{user.name}</Text>
+        </View>
         {props.route.params.uid !== firebase.auth().currentUser.uid ? (
           <View>
             {following ? (

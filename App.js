@@ -60,7 +60,9 @@ export class App extends Component {
 
     if (!loaded) {
       return (
-        <View style={{ flex: 1, justifyContent: 'center' }}>
+        <View
+          style={{ flex: 1, justifyContent: 'center', marginLeft: '230px' }}
+        >
           <Text>Loading...</Text>
         </View>
       )

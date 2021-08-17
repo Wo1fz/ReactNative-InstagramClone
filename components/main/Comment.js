@@ -20,7 +20,6 @@ function Comment(props) {
   const [comments, setComments] = useState([])
   const [postId, setPostId] = useState('')
   const [text, setText] = useState('')
-  console.log(props)
 
   useEffect(() => {
     function matchUserToComment(comments) {

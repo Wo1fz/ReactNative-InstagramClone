@@ -10,6 +10,8 @@ import {
   ActivityIndicator,
 } from 'react-native'
 import { connect } from 'react-redux'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import Fontisto from 'react-native-vector-icons/Fontisto'
 import firebase from 'firebase'
 require('firebase/firestore')
 
@@ -21,25 +23,44 @@ function Feed(props) {
     setIsLoading(true)
     let posts = []
 
-    if (props.usersFollowingLoaded === props.following.length) {
-      for (let i = 0; i < props.following.length; i++) {
-        const user = props.users.find((el) => el.uid === props.following[i])
-
-        if (user != undefined) {
-          posts = [...posts, ...user.posts]
-        }
-      }
-
-      posts.sort(function (x, y) {
+    if (
+      props.usersFollowingLoaded === props.following.length &&
+      props.following.length !== 0
+    ) {
+      props.feed.sort(function (x, y) {
         return y.creation - x.creation
       })
 
-      setPosts(posts)
+      setPosts(props.feed)
     }
 
     setIsLoading(false)
-  }, [props.usersFollowingLoaded])
+  }, [props.usersFollowingLoaded, props.feed])
 
+  const onLikePress = (userId, postId) => {
+    firebase
+      .firestore()
+      .collection('posts')
+      .doc(userId)
+      .collection('userPosts')
+      .doc(postId)
+      .collection('likes')
+      .doc(firebase.auth().currentUser.uid)
+      .set({})
+  }
+
+  const onDislikePress = (userId, postId) => {
+    firebase
+      .firestore()
+      .collection('posts')
+      .doc(userId)
+      .collection('userPosts')
+      .doc(postId)
+      .collection('likes')
+      .doc(firebase.auth().currentUser.uid)
+      .delete({})
+  }
+  console.log(posts)
   return (
     <View style={styles.container}>
       {isLoading ? (
@@ -72,6 +93,41 @@ function Feed(props) {
                     style={styles.image}
                     source={{ uri: item.downloadURL }}
                   />
+                  <View style={{ flexDirection: 'row' }}>
+                    {item.currentUserLike ? (
+                      <TouchableOpacity style={styles.like}>
+                        <Ionicons
+                          name='ios-heart-sharp'
+                          style={{ color: 'red' }}
+                          size={30}
+                          onPress={() => onDislikePress(item.user.uid, item.id)}
+                        />
+                      </TouchableOpacity>
+                    ) : (
+                      <TouchableOpacity style={styles.like}>
+                        <Ionicons
+                          name='ios-heart-outline'
+                          style={{ color: '#09092a' }}
+                          size={30}
+                          onPress={() => onLikePress(item.user.uid, item.id)}
+                        />
+                      </TouchableOpacity>
+                    )}
+                    <TouchableOpacity style={styles.commentButton}>
+                      <Fontisto
+                        name='comment'
+                        style={{ color: '#09092a' }}
+                        size={22}
+                        onPress={() =>
+                          props.navigation.navigate('Comment', {
+                            ...item,
+                            postId: item.id,
+                            uid: item.user.uid,
+                          })
+                        }
+                      />
+                    </TouchableOpacity>
+                  </View>
                   <View style={{ flexDirection: 'row' }}>
                     <TouchableOpacity
                       onPress={() =>
@@ -157,12 +213,18 @@ const styles = StyleSheet.create({
     marginLeft: '10px',
     marginBottom: '35px',
   },
+  like: {
+    margin: '7px',
+  },
+  commentButton: {
+    marginTop: '10px',
+  },
 })
 
 const mapStateToProps = (store) => ({
   currentUser: store.userState.currentUser,
   following: store.userState.following,
-  users: store.usersState.users,
+  feed: store.usersState.feed,
   usersFollowingLoaded: store.usersState.usersFollowingLoaded,
 })
 

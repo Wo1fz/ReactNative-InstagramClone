@@ -7,7 +7,6 @@ import {
   USERS_LIKES_STATE_CHANGE,
   CLEAR_DATA,
 } from '../constants/index'
-import { SnapshotViewIOSComponent } from 'react-native'
 import firebase from 'firebase'
 require('firebase/firestore')
 

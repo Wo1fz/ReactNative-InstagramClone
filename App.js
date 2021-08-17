@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar'
 import React, { Component } from 'react'
 import { API_KEY, MESSAGING_SENDER_ID, APP_ID, MEASUREMENT_ID } from '@env'
 import { View, Text } from 'react-native'

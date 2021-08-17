@@ -60,14 +60,13 @@ function Feed(props) {
       .doc(firebase.auth().currentUser.uid)
       .delete({})
   }
-  console.log(posts)
+
   return (
     <View style={styles.container}>
       {isLoading ? (
         <ActivityIndicator size='large' style={{ marginTop: '250px' }} />
       ) : (
         <View style={styles.containerGallery}>
-          {posts.length > 0 ? (
             <FlatList
               numColumns={1}
               horizontal={false}
@@ -155,11 +154,6 @@ function Feed(props) {
                 </View>
               )}
             />
-          ) : (
-            <Text style={{ fontSize: '20px', marginTop: '40px' }}>
-              Follow someone now!
-            </Text>
-          )}
         </View>
       )}
     </View>

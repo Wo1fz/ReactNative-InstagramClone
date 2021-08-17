@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { View, Button, TextInput, Text } from 'react-native'
 import firebase from 'firebase'
-import { TapGestureHandler } from 'react-native-gesture-handler'
 
 export class Login extends Component {
   constructor(props) {
